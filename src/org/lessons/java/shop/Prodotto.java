@@ -1,5 +1,7 @@
 package org.lessons.java.shop;
 
+import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.util.Random;
 
 public class Prodotto {
@@ -7,10 +9,10 @@ public class Prodotto {
     public int codice;
     public String nome;
     public String descrizione;
-    public double prezzo;
-    public double iva;
+    public BigDecimal prezzo;
+    public BigDecimal iva;
 
-    public Prodotto(String nome, String descrizione, double prezzo, double iva) {
+    public Prodotto(String nome, String descrizione, BigDecimal prezzo, BigDecimal iva) {
         // genera numero randome per il codice
         Random random = new Random();
         this.codice = random.nextInt(9000) + 1000;
@@ -22,18 +24,21 @@ public class Prodotto {
     }
 
     // metodo prezzo base
-    public double getPrezzoBase() {
+    public BigDecimal getPrezzoBase() {
         return prezzo;
     }
 
     // medoto prezzo con iva
-    public double getPrezzoIvato() {
-        return prezzo * (1 + iva);
+    public BigDecimal getPrezzoIvato() {
+        if (prezzo != null && iva != null) {
+            return prezzo.add(prezzo.multiply(iva)).setScale(2, RoundingMode.DOWN);
+        }
+        return null;
     }
 
     // metodono nome esteso
     public String getNomeEsteso() {
-        return codice + "-" + nome;
+        return codice + " - " + nome;
     }
 
 }
