@@ -6,39 +6,89 @@ import java.util.Random;
 
 public class Prodotto {
 
-    public int codice;
-    public String nome;
-    public String descrizione;
-    public BigDecimal prezzo;
-    public BigDecimal iva;
+    // incapsulamento, attributi PRIVATE
+    private int codice;
+    private String nome;
+    private String marca;
+    private BigDecimal prezzo;
+    private BigDecimal iva;
 
-    public Prodotto(String nome, String descrizione, BigDecimal prezzo, BigDecimal iva) {
-        // genera numero randome per il codice
+    // costruttore completo
+    public Prodotto(String nome, String marca, BigDecimal prezzo, BigDecimal iva) {
+
         Random random = new Random();
         this.codice = random.nextInt(9000) + 1000;
-
         this.nome = nome;
-        this.descrizione = descrizione;
+        this.marca = marca;
         this.prezzo = prezzo;
         this.iva = iva;
     }
 
-    // metodo prezzo base
-    public BigDecimal getPrezzoBase() {
+    // costruttore incompleto (overload) (es. se non conosco iva o prezzo)
+    public Prodotto(String nome, String marca) {
+        Random random = new Random();
+        this.codice = random.nextInt(9000) + 1000;
+        this.nome = nome;
+        this.marca = marca;
+        this.prezzo = BigDecimal.ZERO; // prezzo default
+        this.iva = new BigDecimal("0.22"); // iva default
+    }
+
+    // GETTERS e SETTERS
+
+    public int getCodice() {
+        return codice;
+    }
+
+    public String getNome() {
+        return nome;
+    }
+
+    public void setNome(String nome) {
+        this.nome = nome;
+    }
+
+    public String getMarca() {
+        return marca;
+    }
+
+    public void setMarca(String marca) {
+        this.marca = marca;
+    }
+
+    public BigDecimal getPrezzo() {
         return prezzo;
     }
 
-    // medoto prezzo con iva
-    public BigDecimal getPrezzoIvato() {
-        if (prezzo != null && iva != null) {
-            return prezzo.add(prezzo.multiply(iva)).setScale(2, RoundingMode.DOWN);
+    public void setPrezzo(BigDecimal prezzo) {
+        if (prezzo.compareTo(BigDecimal.ZERO) >= 0) {
+            this.prezzo = prezzo;
+        } else {
+            System.out.println("Prezzo non valido");
         }
-        return null;
     }
 
-    // metodono nome esteso
+    public BigDecimal getIva() {
+        return iva;
+    }
+
+    public void setIva(BigDecimal iva) {
+        if (iva.compareTo(BigDecimal.ZERO) >= 0) {
+            this.iva = iva;
+        } else {
+            System.out.println("IVA non valida");
+        }
+    }
+
+    public BigDecimal getPrezzoIvato() {
+        if (prezzo != null && iva != null) {
+            BigDecimal importoIva = prezzo.multiply(iva);
+            return prezzo.add(importoIva).setScale(2, RoundingMode.HALF_EVEN);
+        }
+        return BigDecimal.ZERO;
+    }
+
     public String getNomeEsteso() {
         return codice + " - " + nome;
     }
-
 }
